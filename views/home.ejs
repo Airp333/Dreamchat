@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=delete,attach_file,edit,send" />
+    <style>
+        body {
+            font-family: "Ubuntu", sans-serif;
+            background-image: linear-gradient(to right, #A3A3FF 0%, #304352 100%);
+            color: #dbdee1;
+            margin: 30px;
+            justify-content: center;
+            align-items: center;
+        }
+        input {
+            font-family: "Ubuntu", sans-serif;
+            width: 100%;
+            background: #383a40;
+            border: 1px solid #26282c;
+            padding: 5px;
+            color: #dbdee1;
+            outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        }
+        input:focus {
+            border-color: #A3A3FF;
+            box-shadow: 0 0 0 3px rgba(163, 163, 255, 0.35);
+        }
+        button {
+            font-family: "Ubuntu", sans-serif;
+            border: none;
+            border-radius: 8px;
+            color: #ffffff;
+            padding: 10px;
+            cursor: pointer;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+        }
+        button:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            transform: translateY(-1px);
+        }
+        button:active {
+            transform: translateY(0) scale(0.96);
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        h2 {
+            margin: 0;
+            border-bottom: solid 1px rgba(255, 255, 255, 0.2);
+            padding: 16px 20px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            text-align: center;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: solid 1px rgba(255, 255, 255, 0.4);
+            box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.1);
+            text-shadow: 2px 2px 5px rgba(100, 100, 100, 0.5);
+        }
+        #main {
+            width: 100%;
+        }
+        input::placeholder {
+            color: white;
+        }
+        #form {
+            display: flex;
+        }
+        #messages {
+            max-height: 400px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+            padding: 12px 0;
+        }
+        #messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        #messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+        }
+        #messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+        h3 {
+            padding: 6px 12px;
+            margin: 2px 8px;
+            border-radius: 6px;
+            font-weight: 400;
+            font-size: 15px;
+            color: white;
+            transition: background 0.1s ease;
+        }
+        h3:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .delete-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: solid 1px rgba(255, 255, 255, 0.4);
+            box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.1);
+            text-shadow: 2px 2px 5px rgba(100, 100, 100, 0.5);
+            padding: 5px;
+            margin-left: auto;
+        }
+        .edit-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: solid 1px rgba(255, 255, 255, 0.4);
+            box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.1);
+            text-shadow: 2px 2px 5px rgba(100, 100, 100, 0.5);
+            padding: 5px;
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="main" class="glass-container">
+        <h2 id="chat-title" class="glass-container">Dreamchat</h2>
+        <div id="messages">
+            <% coloredPayam.forEach((payam) => { %>
+            <h3 data-id="<%= payam.id %>" data-username="<%= payam.username %>" data-color="<%= payam.color %>">
+                <span style="color: <%= payam.color %>"><%= payam.username %></span>:
+                <span class="msg-text"><%= payam.text %></span>
+                <% if (payam.username === username) { %>
+                <button class="delete-btn"><span class="material-symbols-outlined">delete</span></button>
+                <button class="edit-btn"><span class="material-symbols-outlined">edit</span></button>
+                <% } %>
+            </h3>
+            <% }) %>
+        </div>
+        <form id="form">
+            <input id="input" type="text" placeholder="Type a message..." class="glass-container">
+            <button type="submit" class="glass-container">
+                <span class="material-symbols-outlined">send</span>
+            </button>
+        </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+        const username = "<%= username %>";
+
+        function usernameToColor(username) {
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) {
+                hash = username.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const hue = Math.abs(hash) % 360;
+            return `hsl(${hue}, 70%, 65%)`;
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = input.value.trim();
+            if (!text) return;
+            socket.emit('chatMessage', text);
+            input.value = '';
+            input.focus();
+        });
+
+        socket.on('chat message', (data) => {
+            const span = document.createElement('span');
+            span.style.color = usernameToColor(data.username);
+            span.textContent = data.username;
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'msg-text';
+            textSpan.textContent = data.text;
+
+            const h3 = document.createElement('h3');
+            h3.dataset.id = data.id;
+            h3.dataset.username = data.username;
+            h3.dataset.color = usernameToColor(data.username);
+            h3.appendChild(span);
+            h3.appendChild(document.createTextNode(': '));
+            h3.appendChild(textSpan);
+
+            if (data.username === username) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.classList.add("delete-btn");
+                const deleteIcon = document.createElement('span');
+                deleteIcon.textContent = "delete";
+                deleteIcon.classList.add('material-symbols-outlined');
+                deleteBtn.appendChild(deleteIcon);
+                h3.appendChild(deleteBtn);
+
+                const editBtn = document.createElement('button');
+                editBtn.classList.add("edit-btn");
+                const editIcon = document.createElement('span');
+                editIcon.textContent = "edit";
+                editIcon.classList.add('material-symbols-outlined');
+                editBtn.appendChild(editIcon);
+                h3.appendChild(editBtn);
+            }
+
+            messages.appendChild(h3);
+            messages.scrollTop = messages.scrollHeight;
+        });
+
+        socket.on('message deleted', (id) => {
+            const h3 = document.querySelector(`[data-id="${id}"]`);
+            if (h3) h3.remove();
+        });
+
+        socket.on('message edited', ({ id, text }) => {
+            const h3 = document.querySelector(`[data-id="${id}"]`);
+            if (!h3) return;
+            const textSpan = h3.querySelector('.msg-text');
+            if (textSpan) {
+                textSpan.textContent = text;
+            }
+        });
+
+        messages.addEventListener('click', (e) => {
+            if (e.target.closest('.delete-btn')) {
+                const button = e.target.closest('.delete-btn');
+                const h3 = button.closest('h3');
+                const id = h3.dataset.id;
+                socket.emit('deleteMessage', id);
+                return;
+            }
+
+            if (e.target.closest('.edit-btn')) {
+                const button = e.target.closest('.edit-btn');
+                const h3 = button.closest('h3');
+                const id = h3.dataset.id;
+                const textSpan = h3.querySelector('.msg-text');
+                const currentText = textSpan ? textSpan.textContent : '';
+                const newText = prompt('Edit your message:', currentText);
+                if (newText !== null && newText.trim() !== '') {
+                    socket.emit('editMessage', { id, text: newText.trim() });
+                }
+                return;
+            }
+        });
+    </script>
+</body>
+</html>
