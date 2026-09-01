@@ -15,13 +15,13 @@ const io = new Server(server);
 
 const messageLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 120,
+  max: 150,
   message: { error: "Too many messages, please slow down." }
 });
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 5,
+  max: 100,
   message: { error: "Too many requests, please slow down." }
 });
 
