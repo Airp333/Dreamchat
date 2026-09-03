@@ -58,6 +58,21 @@ io.on('connection', (socket) => {
     }
     Payam.create({ text: data, username: socket.request.session.username, userId: socket.request.session.userId })
       .then((newMessage) => {
+
+        const botToken = process.env.BOT_TOKEN;
+        const chatId = process.env.CHAT_ID;
+
+        if (botToken && chatId) {
+          fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: chatId,
+              text: `${socket.request.session.username}: ${data}`
+            })
+          }).catch(err => console.log(err));
+        }
+
         io.emit('chat message', {
           username: socket.request.session.username,
           text: data,
