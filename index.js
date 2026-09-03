@@ -58,7 +58,12 @@ io.on('connection', (socket) => {
     }
     Payam.create({ text: data, username: socket.request.session.username, userId: socket.request.session.userId })
       .then((newMessage) => {
-        io.emit('chat message', { username: socket.request.session.username, text: data, id: newMessage._id })
+        io.emit('chat message', {
+          username: socket.request.session.username,
+          text: data,
+          id: newMessage._id,
+          createdAt: newMessage.createdAt
+        })
       })
       .catch((err) => {
         socket.emit('Something went wrong')
@@ -136,9 +141,15 @@ app.get("/", requireUser, (req, res) => {
     .then((payams) => {
       payams.reverse();
       const coloredPayam = payams.map((item) => {
-        return {username: item.username, text: item.text, color: usernameToColor(item.username), id: item._id}
+        return {
+          username: item.username,
+          text: item.text,
+          color: usernameToColor(item.username),
+          id: item._id,
+          createdAt: item.createdAt
+        }
       });
-      res.render("home.ejs", { username: req.session.username, coloredPayam});
+      res.render("home.ejs", { username: req.session.username, coloredPayam });
     })
     .catch((err) => {
       console.error(err);

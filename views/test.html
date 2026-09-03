@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        .message-container {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            gap: 10px;
+            align-items: center;
+            padding: 10px;
+            background: #333;
+            border-radius: 8px;
+            width: 500px;
+            margin: 20px;
+        }
+
+        .username { color: #A3A3FF; }
+        .msg-text { color: white; }
+        .msg-time {
+            color: rgba(255,255,255,0.5);
+            font-size: 11px;
+        }
+
+        .delete-btn, .edit-btn {
+            grid-column: 3; /* or 4 */
+            justify-self: end;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn { grid-column: 4; }
+
+        .delete-btn .material-symbols-outlined,
+        .edit-btn .material-symbols-outlined {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .delete-btn:hover, .edit-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="message-container">
+        <span class="username">John</span>
+        <span class="msg-text">Hello world!</span>
+        <span class="msg-time">2:30 PM</span>
+        <button class="delete-btn">
+            <span class="material-symbols-outlined">delete</span>
+        </button>
+        <button class="edit-btn">
+            <span class="material-symbols-outlined">edit</span>
+        </button>
+    </div>
+</body>
+</html>
