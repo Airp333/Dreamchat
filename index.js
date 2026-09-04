@@ -15,18 +15,12 @@ const io = new Server(server);
 
 const messageLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 150,
+  limit: 30,
   message: { error: "Too many messages, please slow down." }
 });
 
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: { error: "Too many requests, please slow down." }
-});
-
 app.set('view engine', 'ejs');
-
+app.set('trust proxy', 2)
 app.set('views', path.join(__dirname, '/views'));
 
 const sessionMiddleware = session({
@@ -117,7 +111,7 @@ io.on('connection', (socket) => {
           return;
         }
 
-        if (data.text.length > 1000) {
+        if (data.text.length > 400) {
           return;
         }
 
@@ -148,7 +142,7 @@ mongoose.connect(process.env.MONGODB_URI)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/auth', authLimiter, authRouter)
+app.use('/api/auth', authRouter)
 
 app.get("/", requireUser, (req, res) => {
   Payam.find()

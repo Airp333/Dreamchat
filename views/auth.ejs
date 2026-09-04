@@ -121,7 +121,8 @@ text-align: center;
   <h1 class="glass-container"> Signup </h1>
   <form id="signup-form" action="/signup" method="POST">
     <input id="signup-username" class="glass-container" type="text" name="username" placeholder="Enter Username" required>
-    <input id="signup-password" class="glass-container" type="password" name="password" placeholder="Enter password" required>
+    <input id="signup-password" class="glass-container" type="password" name="password" placeholder="Enter Password" required>
+    <input id="signup-password-check" class="glass-container" type="password" name="password-check" placeholder="Check Password" required>
     <button class="glass-container" type="submit">Signup</button>
   </form>
   </div>
@@ -132,6 +133,7 @@ text-align: center;
     const loginPassword = document.getElementById('login-password')
     const signupUsername = document.getElementById('signup-username')
     const signupPassword = document.getElementById('signup-password')
+    const signupPasswordCheck = document.getElementById('signup-password-check')
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -161,7 +163,7 @@ text-align: center;
     const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: signupUsername.value, password: signupPassword.value })
+        body: JSON.stringify({ username: signupUsername.value, password: signupPassword.value, passwordCheck: signupPasswordCheck.value})
     });
 
     const data = await res.json();
