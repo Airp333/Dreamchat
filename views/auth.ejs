@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=0.8">
   <title>Login</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,8 @@
   }
 body{
   font-family: "Ubuntu", sans-serif;
-  background-image: linear-gradient(to right, #A3A3FF 0%, #304352 100%);
+  /* background-image: linear-gradient(to right, #A3A3FF 0%, #304352 100%); */
+  background-image: linear-gradient(to right, #434343 0%, black 100%);
   /* background-image:  linear-gradient(to right, #d7d2cc 0%, #304352 100%); */
   color: #dbdee1;
   width: 400px;
@@ -59,8 +60,8 @@ button:disabled{
   box-shadow: none;
 }
   input:focus{
-    border-color: #A3A3FF;
-    box-shadow: 0 0 0 3px rgba(163, 163, 255, 0.35);
+    border-color: rgba(0, 0, 0, 0.35);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.35);
   }
 #login-container{
   width: 400px;
@@ -72,7 +73,7 @@ button:disabled{
 }
   h1{
     margin: 0;
-    border-bottom: solid 1px rgba(255, 255, 255, 0.2);
+    border-bottom: solid 1px rgba(0, 0, 0, 0.2);
     padding: 16px 20px;
     margin-bottom: 15px;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
@@ -86,13 +87,13 @@ button:disabled{
     text-decoration: none;
 }
 .glass-container {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
     color: white;
     backdrop-filter: blur(10px);
     border-radius: 10px;
     border: solid 1px rgba(255, 255, 255, 0.2);
-    box-shadow: 2px 2px 5px rgba(255, 255, 255, 0.05);
-        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
 input::placeholder{
 color:white;
