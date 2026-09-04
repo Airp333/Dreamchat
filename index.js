@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
       return;
     }
 
-    if (data.length > 1000) {
+    if (data.length > 300) {
       return;
     }
     Payam.create({ text: data, username: socket.request.session.username, userId: socket.request.session.userId })
