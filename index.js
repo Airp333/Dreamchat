@@ -15,7 +15,7 @@ const io = new Server(server);
 
 const messageLimiter = rateLimit({
   windowMs: 60 * 1000,
-  limit: 30,
+  limit: 15,
   message: { error: "Too many messages, please slow down." }
 });
 
