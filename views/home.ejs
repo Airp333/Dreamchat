@@ -209,11 +209,6 @@
         position: fixed;
         bottom: 15px;
         left: 15px;
-    }
-    .theme-btn{
-        position: fixed;
-        bottom: 15px;
-        left: 15px;
         background: rgba(0, 0, 0, 0.1);
         color: white;
         backdrop-filter: blur(10px);
@@ -231,6 +226,32 @@
     }
     .theme-btn .material-symbols-outlined {
         font-size: 27px;
+    }
+    .theme-select{
+        background: rgba(0, 0, 0, 0.1);
+        color: white;
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: solid 1px rgba(255, 255, 255, 0.4);
+        text-shadow: 2px 2px 5px rgba(100, 100, 100, 0.5);
+        display: flex;
+        cursor: pointer;
+    }
+    .color-btn{
+        background: rgba(0, 0, 0, 0.1);
+        color: white;
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        border: solid 1px rgba(255, 255, 255, 0.4);
+        text-shadow: 2px 2px 5px rgba(100, 100, 100, 0.5);
+        padding: 5px;
+        width: 55px;
+        height: 55px;
+        display: flex;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
     }
     </style>
 </head>
@@ -258,7 +279,9 @@
         </form>
     </div>
 
+    <div class="theme-container">
     <button class="theme-btn" ><span class="material-symbols-outlined">palette</span></button>
+    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
@@ -369,27 +392,62 @@ socket.on('chat message', (data) => {
         });
     </script>
     <script>
-        const themeBtn = document.querySelector('.theme-btn')
-        const body = document.querySelector('body')
+const themeBtn = document.querySelector('.theme-btn')
+const body = document.querySelector('body')
 
-        function getRandomElement(arr) {
-            const randomIndex = Math.floor(Math.random() * arr.length);
-            return arr[randomIndex];
-        }
+function getRandomElement(arr) {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    return arr[randomIndex];
+}
 
+const grads = [
+    "linear-gradient(to top, #09203f 0%, #537895 100%)",
+    "linear-gradient(to right, #434343 0%, black 100%)",
+    "linear-gradient(78deg, rgba(102, 0, 0, 1) 0%, rgba(176, 0, 0, 1) 51%, rgba(212, 0, 0, 1) 100%)",
+    "linear-gradient(351deg, rgba(7, 46, 0, 1) 0%, rgba(28, 130, 0, 1) 52%, rgba(87, 168, 0, 1) 100%)",
+    "linear-gradient(90deg, #2c003e 0%, #1a1a2e 100%)",
+    "linear-gradient(135deg, #641e16 0%, #d35400 100%)",
+]
 
-        themeBtn.addEventListener('click', (e) => {
-           const grads = [
-              "linear-gradient(to top, #09203f 0%, #537895 100%)",
-              "linear-gradient(to right, #434343 0%, black 100%)",
-              "linear-gradient(78deg,rgba(102, 0, 0, 1) 0%, rgba(176, 0, 0, 1) 51%, rgba(212, 0, 0, 1)",
-              "linear-gradient(351deg,rgba(7, 46, 0, 1) 0%, rgba(28, 130, 0, 1) 52%, rgba(87, 168, 0, 1) 100%)",
-              "linear-gradient(90deg, #2c003e 0%, #1a1a2e 100%)",
-              "linear-gradient(135deg, #641e16 0%, #d35400 100%)",
-           ]
+themeBtn.addEventListener('click', (e) => {
+    const themeContainer = document.querySelector('.theme-container')
 
-          body.style.backgroundImage = getRandomElement(grads);
-        })
+    const existing = document.querySelector('.theme-select')
+    if (existing) {
+        existing.remove()
+        return
+    }
+
+    const div = document.createElement('div');
+    div.style.height = "55px";
+    div.style.width = "260px";
+    div.style.position = "fixed";
+    div.style.bottom = "15px";
+    div.style.left = "70px";
+    div.style.display = "flex";
+    div.style.alignItems = "center";
+    div.style.justifyContent = "center";
+    div.style.gap = "10px";
+    div.className = "theme-select"
+    themeContainer.append(div)
+
+    grads.forEach((grad, i) => {
+        const btn = document.createElement('button');
+        btn.style.width = "30px";
+        btn.style.height = "30px";
+        btn.style.borderRadius = "10px";
+        btn.style.cursor = "pointer";
+        btn.style.background = grad;
+        btn.className = "color-btn";
+        btn.setAttribute('aria-label', `Theme ${i + 1}`);
+
+        btn.addEventListener('click', () => {
+            body.style.background = grad;
+        });
+
+        div.append(btn);
+    })
+})
     </script>
 </body>
 </html>

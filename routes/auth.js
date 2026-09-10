@@ -31,9 +31,14 @@ router.post('/signup', signupLimiter, async (req, res) => {
   }
 
   const usernameRegex = /^[A-Za-z0-9_]{3,15}$/;
+  const passwordRegex = /^[A-Za-z0-9_%$&*#]{8,35}$/;
 
   if (!usernameRegex.test(username)) {
     return res.status(400).json({ error: 'Username must be 3-15 characters: letters, numbers, and underscores only' });
+  }
+
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({ error: 'Password must be 8-35 characters: letters, numbers, #$%&*_ only' });
   }
 
   try {
