@@ -4,6 +4,9 @@ const payamSchema = new mongoose.Schema({
   text: {
     type: String,
   },
+  imageUrl: {
+    type: String,
+  },
   username: {
     type: String,
   },

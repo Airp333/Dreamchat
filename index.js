@@ -12,6 +12,7 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require('socket.io');
 const io = new Server(server);
+const upload = require('./config/cloudinary');
 
 const messageLimiter = rateLimit({
   windowMs: 60 * 1000,
@@ -127,6 +128,44 @@ io.on('connection', (socket) => {
 
 });
 
+app.post('/messages/upload', requireAuth, upload.single('image'), (req, res) => {
+
+  if (!req.file) {
+    return res.status(400).json({ error: "image is required" });
+  }
+
+  Payam.create({ imageUrl: req.file.path, username: req.session.username, userId: req.session.userId })
+    .then((newMessage) => {
+      const botToken = process.env.BOT_TOKEN;
+      const chatId = process.env.CHAT_ID;
+
+      if (botToken && chatId) {
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: `${req.session.username}: ${req.file.path}`
+          })
+        }).catch(err => console.log(err));
+      }
+
+      io.emit('chat message', {
+        username: req.session.username,
+        imageUrl: req.file.path,
+        id: newMessage._id,
+        createdAt: newMessage.createdAt
+      })
+
+      res.json({ success: true });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: "Something went wrong" });
+      console.log(err);
+    });
+
+})
+
 function requireUser(req, res, next) {
   if (req.session.userId) {
     next();
@@ -153,6 +192,7 @@ app.get("/", requireUser, (req, res) => {
         return {
           username: item.username,
           text: item.text,
+          imageUrl: item.imageUrl,
           color: usernameToColor(item.username),
           id: item._id,
           createdAt: item.createdAt
