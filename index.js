@@ -42,16 +42,23 @@ io.on('connection', (socket) => {
     socket.disconnect();
     return;
   }
-  socket.on('chatMessage', (data) => {
+  socket.on('chatMessage', ({ text, replyTo, replyToUsername, replyToText }) => {
 
-    if (!data || data.trim() === "") {
+    if (!text || text.trim() === "") {
       return;
     }
 
-    if (data.length > 300) {
+    if (text.length > 300) {
       return;
     }
-    Payam.create({ text: data, username: socket.request.session.username, userId: socket.request.session.userId })
+    Payam.create({
+      text: text,
+      username: socket.request.session.username,
+      userId: socket.request.session.userId,
+      replyTo: replyTo,
+      replyToUsername: replyToUsername,
+      replyToText: replyToText
+    })
       .then((newMessage) => {
 
         const botToken = process.env.BOT_TOKEN;
@@ -63,16 +70,19 @@ io.on('connection', (socket) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               chat_id: chatId,
-              text: `${socket.request.session.username}: ${data}`
+              text: `${socket.request.session.username}: ${text}`
             })
           }).catch(err => console.log(err));
         }
 
         io.emit('chat message', {
           username: socket.request.session.username,
-          text: data,
+          text: text,
           id: newMessage._id,
-          createdAt: newMessage.createdAt
+          createdAt: newMessage.createdAt,
+          replyTo: replyTo,
+          replyToUsername: replyToUsername,
+          replyToText: replyToText
         })
       })
       .catch((err) => {
@@ -195,7 +205,10 @@ app.get("/", requireUser, (req, res) => {
           imageUrl: item.imageUrl,
           color: usernameToColor(item.username),
           id: item._id,
-          createdAt: item.createdAt
+          createdAt: item.createdAt,
+          replyTo: item.replyTo,
+          replyToUsername: item.replyToUsername,
+          replyToText: item.replyToText
         }
       });
       res.render("home.ejs", { username: req.session.username, coloredPayam });

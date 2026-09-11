@@ -15,6 +15,16 @@ const payamSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
+  replyTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Payam'
+  },
+  replyToUsername: {
+    type: String,
+  },
+  replyToText: {
+    type: String,
+  }
 }, { timestamps: true });
 
 const Payam = mongoose.model('Payam', payamSchema);
