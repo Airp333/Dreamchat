@@ -12,7 +12,7 @@ const loginLimiter = rateLimit({
 
 const signupLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  limit: 5,
+  limit: 7,
   keyGenerator: (req) => req.headers["cf-connecting-ip"] ?? ipKeyGenerator(req.ip),
   message: { error: "please wait before creating another account" },
 });

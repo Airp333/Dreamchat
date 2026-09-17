@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const payamSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
   text: {
     type: String,
   },
@@ -17,7 +17,7 @@ const payamSchema = new mongoose.Schema({
   },
   replyTo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Payam'
+    ref: 'Message'
   },
   replyToUsername: {
     type: String,
@@ -27,6 +27,6 @@ const payamSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-const Payam = mongoose.model('Payam', payamSchema);
+const Message = mongoose.model('Message', messageSchema);
 
-module.exports = Payam;
+module.exports = Message;

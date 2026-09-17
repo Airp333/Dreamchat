@@ -14,9 +14,7 @@
   }
 body{
   font-family: "Ubuntu", sans-serif;
-  /* background-image: linear-gradient(to right, #A3A3FF 0%, #304352 100%); */
-  background-image: linear-gradient(to right, #434343 0%, black 100%);
-  /* background-image:  linear-gradient(to right, #d7d2cc 0%, #304352 100%); */
+  background-image: linear-gradient(to top, #09203f 0%, #537895 100%);
   color: #dbdee1;
   width: 400px;
   margin: auto;
@@ -95,6 +93,13 @@ button:disabled{
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.05);
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
 }
+.error-msg {
+  color: #ff6b6b;
+  text-align: center;
+  font-size: 0.85rem;
+  margin: 4px 0 10px 0;
+  min-height: 1em; /* prevents layout jump when empty */
+}
 input::placeholder{
 color:white;
 }
@@ -108,23 +113,25 @@ text-align: center;
 <body>
   <div id="login-container" class="glass-container">
   <h1 class="glass-container"> Login </h1>
-  <form id="login-form" action="/login" method="POST">
-    <input id="login-username" class="glass-container" type="text" name="username" placeholder="Enter Username" required>
-    <input id="login-password" class="glass-container" type="password" name="password" placeholder="Enter password" required>
-    <button class="glass-container" type="submit">Login</button>
-  </form>
+<form id="login-form" action="/login" method="POST">
+  <input id="login-username" class="glass-container" type="text" name="username" placeholder="Enter Username" required>
+  <input id="login-password" class="glass-container" type="password" name="password" placeholder="Enter password" required>
+  <p id="login-error" class="error-msg"></p>
+  <button class="glass-container" type="submit">Login</button>
+</form>
   </div>
 
   <h3>Or</h3>
 
   <div id="signup-container" class="glass-container">
   <h1 class="glass-container"> Signup </h1>
-  <form id="signup-form" action="/signup" method="POST">
-    <input id="signup-username" class="glass-container" type="text" name="username" placeholder="Enter Username" required>
-    <input id="signup-password" class="glass-container" type="password" name="password" placeholder="Enter Password" required>
-    <input id="signup-password-check" class="glass-container" type="password" name="password-check" placeholder="Check Password" required>
-    <button class="glass-container" type="submit">Signup</button>
-  </form>
+<form id="signup-form" action="/signup" method="POST">
+  <input id="signup-username" class="glass-container" type="text" name="username" placeholder="Enter Username" required>
+  <input id="signup-password" class="glass-container" type="password" name="password" placeholder="Enter Password" required>
+  <input id="signup-password-check" class="glass-container" type="password" name="password-check" placeholder="Check Password" required>
+  <p id="signup-error" class="error-msg"></p>
+  <button class="glass-container" type="submit">Signup</button>
+</form>
   </div>
 <script>
     const loginForm = document.getElementById('login-form');
@@ -134,9 +141,12 @@ text-align: center;
     const signupUsername = document.getElementById('signup-username')
     const signupPassword = document.getElementById('signup-password')
     const signupPasswordCheck = document.getElementById('signup-password-check')
+    const loginError = document.getElementById('login-error')
+    const signupError = document.getElementById('signup-error')
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    loginError.textContent = "";
     try{
     const res = await fetch('/api/auth/login', {
         method: 'POST',
@@ -147,18 +157,26 @@ text-align: center;
     const data = await res.json();
 
     if (!res.ok) {
-        console.error(data.error || 'Failed to send message');
+        loginError.textContent = data.error || 'Login failed';
         return;
     }
-    window.location.href = "/";
+    window.location.href = "/chat";
     }
     catch (err) {
+    loginError.textContent = "Something went wrong. Please try again.";
     console.error(err);
     }
   });
 
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    signupError.textContent = "";
+
+    if (signupPassword.value !== signupPasswordCheck.value) {
+      signupError.textContent = "Passwords do not match";
+      return;
+    }
+
     try{
     const res = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -169,12 +187,13 @@ text-align: center;
     const data = await res.json();
 
     if (!res.ok) {
-        console.error(data.error || 'Failed to send message');
+        signupError.textContent = data.error || 'Signup failed';
         return;
     }
-    window.location.href = "/";
+    window.location.href = "/chat";
     }
     catch (err) {
+    signupError.textContent = "Something went wrong. Please try again.";
     console.error(err);
     }
   });
