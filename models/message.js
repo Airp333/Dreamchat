@@ -1,3 +1,5 @@
+// Part of Dreamchat — licensed under GPLv3. See LICENSE.
+
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema({
