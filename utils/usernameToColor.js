@@ -1,3 +1,5 @@
+// Part of Dreamchat — licensed under GPLv3. See LICENSE.
+
 function usernameToColor(username) {
   if (!username) return 'hsl(0, 0%, 60%)';
   let hash = 0;

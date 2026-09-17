@@ -1,3 +1,5 @@
+// Part of Dreamchat — licensed under GPLv3. See LICENSE.
+
 require('dotenv').config();
 const express = require('express');
 const path = require('path');

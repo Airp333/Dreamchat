@@ -1,3 +1,5 @@
+// Part of Dreamchat — licensed under GPLv3. See LICENSE.
+
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt')

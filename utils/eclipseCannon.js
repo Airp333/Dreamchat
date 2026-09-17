@@ -1,3 +1,5 @@
+// Part of Dreamchat — licensed under GPLv3. See LICENSE.
+
 const mongoose = require('mongoose');
 
 const MONGO_URI = 'put your database url here';

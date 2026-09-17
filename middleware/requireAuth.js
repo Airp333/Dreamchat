@@ -1,3 +1,5 @@
+// Part of Dreamchat — licensed under GPLv3. See LICENSE.
+
 function requireAuth(req, res, next) {
   if (req.session.userId) {
     return next();

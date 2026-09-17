@@ -1,3 +1,5 @@
+// Part of Dreamchat — licensed under GPLv3. See LICENSE.
+
 const Message = require('../models/message');
 
 module.exports = function (io) {
