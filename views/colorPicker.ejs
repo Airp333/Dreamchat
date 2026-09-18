@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Picker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap"
+        rel="stylesheet">
+    <style>
+        #curcolhex {
+            color: #808080;
+            cursor: pointer;
+        }
+
+        body {
+            text-align: center;
+            font-family: sans-serif;
+            color: crimson;
+            background-color: #131313;
+        }
+
+        #screen {
+            padding: 50px;
+            border: crimson solid 4px;
+            border-radius: 20px;
+            background-color: #808080;
+            margin-bottom: 5px;
+            margin-top: 10px;
+        }
+
+        .rgb-r {
+            width: 220px;
+            margin: 5px;
+            accent-color: red;
+        }
+
+        .rgb-g {
+            width: 220px;
+            margin: 5px;
+            accent-color: green;
+        }
+
+        .rgb-b {
+            width: 220px;
+            margin: 5px;
+            accent-color: blue;
+        }
+
+        .hsl-h {
+            width: 220px;
+            margin: 5px;
+            accent-color: #af2a40;
+        }
+
+        .hsl-s {
+            width: 220px;
+            margin: 5px;
+            accent-color: purple;
+        }
+
+        .hsl-l {
+            width: 220px;
+            margin: 5px;
+            accent-color: grey;
+        }
+
+        body {
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        #theme {
+            position: fixed;
+            bottom: 15px;
+            left: 15px;
+            background-color: crimson;
+            border-radius: 25%;
+            border: solid crimson 2px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        body.dark-mode {
+            background-color: #d8d8d8;
+        }
+
+        #cthctc {
+            font-size: 15px;
+        }
+
+        .btns {
+            margin: 5px;
+            margin-top: 10px;
+        }
+
+        .btns:hover {
+            transform: scale(1.05);
+        }
+
+        #btndiv {
+            margin-bottom: 5px;
+        }
+
+        #save {
+            color: white;
+            background-color: crimson;
+            border: 1px solid crimson;
+            border-radius: 5px;
+            padding: 5px;
+            margin: 2px;
+            cursor: pointer;
+        }
+
+        #rand {
+            color: white;
+            background-color: crimson;
+            border: 1px solid crimson;
+            border-radius: 5px;
+            padding: 5px;
+            margin: 2px;
+            cursor: pointer;
+        }
+
+        #clear {
+            color: white;
+            background-color: crimson;
+            border: 1px solid crimson;
+            border-radius: 5px;
+            padding: 5px;
+            margin: 2px;
+            cursor: pointer;
+        }
+
+        #btn1,
+        #btn2,
+        #btn3,
+        #btn4,
+        #btn5 {
+            padding: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #btn1:hover,
+        #btn2:hover,
+        #btn3:hover,
+        #btn4:hover,
+        #btn5:hover {
+            transform: scale(1.05);
+        }
+
+        #palettediv {
+            margin-bottom: 15px;
+        }
+
+        .pbtn {
+            margin-right: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Color Picker</h1>
+    <input id="screen" readonly>
+    <div id="ranges">
+        <div>
+            <label>R: <span id="spanr">128</span></label>
+            <input type="range" min="0" max="255" class="rgb-r">
+        </div>
+        <div>
+            <label>G: <span id="spang">128</span></label>
+            <input type="range" min="0" max="255" class="rgb-g">
+        </div>
+        <div>
+            <label>B: <span id="spanb">128</span></label>
+            <input type="range" min="0" max="255" class="rgb-b">
+        </div>
+        <div id="hsl-section">
+            <div>
+                <label>H: <span id="spanh">0</span>°</label>
+                <input type="range" min="0" max="360" class="hsl-h" value="0">
+            </div>
+            <div>
+                <label>S: <span id="spans">50</span>%</label>
+                <input type="range" min="0" max="100" class="hsl-s" value="50">
+            </div>
+            <div>
+                <label>L: <span id="spanl">50</span>%</label>
+                <input type="range" min="0" max="100" class="hsl-l" value="50">
+            </div>
+        </div>
+        <h2 id="curcol">Current color is:</h2>
+        <h2 id="curcolhex">#808080</h2>
+        <p id="cthctc">Click the hex code to copy!</p>
+        <div id="palettediv">
+            <button id="btn1" class="pbtn"></button>
+            <button id="btn2" class="pbtn"></button>
+            <button id="btn3" class="pbtn"></button>
+            <button id="btn4" class="pbtn"></button>
+            <button id="btn5" class="pbtn"></button>
+        </div>
+        <div id="btndiv">
+            <button id="rand" type="button">Random color</button>
+            <button id="save">Save current color</button>
+            <button id="clear">Clear palette</button>
+        </div>
+
+        <button id="theme"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                fill="#e3e3e3">
+                <path
+                    d="M600-640 480-760l120-120 120 120-120 120Zm200 120-80-80 80-80 80 80-80 80ZM483-80q-84 0-157.5-32t-128-86.5Q143-253 111-326.5T79-484q0-146 93-257.5T409-880q-18 99 11 193.5T520-521q71 71 165.5 100T879-410q-26 144-138 237T483-80Zm0-80q88 0 163-44t118-121q-86-8-163-43.5T463-465q-61-61-97-138t-43-163q-77 43-120.5 118.5T159-484q0 135 94.5 229.5T483-160Zm-20-305Z" />
+            </svg></button>
+        <script>
+            const rgbR = document.querySelector(".rgb-r")
+            const rgbG = document.querySelector(".rgb-g")
+            const rgbB = document.querySelector(".rgb-b")
+            const hslH = document.querySelector(".hsl-h")
+            const hslS = document.querySelector(".hsl-s")
+            const hslL = document.querySelector(".hsl-l")
+            const screen = document.querySelector("#screen")
+            const curcolhex = document.querySelector('#curcolhex')
+            const rand = document.querySelector('#rand')
+            const spanr = document.querySelector('#spanr')
+            const spang = document.querySelector('#spang')
+            const spanb = document.querySelector('#spanb')
+            const spanh = document.querySelector('#spanh')
+            const spans = document.querySelector('#spans')
+            const spanl = document.querySelector('#spanl')
+            const save = document.querySelector('#save')
+            const btndiv = document.querySelector("#btndiv")
+            const clear = document.querySelector('#clear')
+            const theme = document.querySelector('#theme')
+
+            function rgbToHsl(r, g, b) {
+                r /= 255;
+                g /= 255;
+                b /= 255;
+
+                const max = Math.max(r, g, b);
+                const min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+
+                if (max === min) {
+                    h = s = 0;
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+                    switch (max) {
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+
+                return [Math.round(h * 360), Math.round(s * 100), Math.round(l * 100)];
+            }
+
+            function hslToRgb(h, s, l) {
+                h /= 360;
+                s /= 100;
+                l /= 100;
+
+                let r, g, b;
+
+                if (s === 0) {
+                    r = g = b = l;
+                } else {
+                    const hue2rgb = (p, q, t) => {
+                        if (t < 0) t += 1;
+                        if (t > 1) t -= 1;
+                        if (t < 1 / 6) return p + (q - p) * 6 * t;
+                        if (t < 1 / 2) return q;
+                        if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                        return p;
+                    };
+
+                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    const p = 2 * l - q;
+
+                    r = hue2rgb(p, q, h + 1 / 3);
+                    g = hue2rgb(p, q, h);
+                    b = hue2rgb(p, q, h - 1 / 3);
+                }
+
+                return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+            }
+
+            function rgbToHex(r, g, b) {
+                const toHex = (value) => {
+                    const hex = Math.round(value).toString(16)
+                    return hex.padStart(2, '0');
+                };
+                return '#' + toHex(r) + toHex(g) + toHex(b)
+            }
+
+            function updatePalette() {
+                let h = parseInt(spanh.textContent);
+                let s = parseInt(spans.textContent);
+                let l = parseInt(spanl.textContent);
+
+                const colors = [];
+
+                colors.push(hslToHex(h, s, Math.max(0, l - 40)));
+                colors.push(hslToHex(h, s, Math.max(0, l - 20)));
+
+                colors.push(hslToHex(h, s, l));
+
+                colors.push(hslToHex(h, s, Math.min(100, l + 20)));
+                colors.push(hslToHex(h, s, Math.min(100, l + 40)));
+
+                const paletteButtons = document.querySelectorAll('.pbtn');
+                paletteButtons.forEach((button, index) => {
+                    if (colors[index]) {
+                        button.style.backgroundColor = colors[index];
+                        button.style.border = `3px solid ${colors[index]}`;
+                    }
+                });
+            }
+
+            function hslToHex(h, s, l) {
+                const [r, g, b] = hslToRgb(h, s, l);
+                return rgbToHex(r, g, b);
+            }
+
+            function updateFromRgb() {
+                const r = parseInt(rgbR.value);
+                const g = parseInt(rgbG.value);
+                const b = parseInt(rgbB.value);
+                const hex = rgbToHex(r, g, b);
+                const [h, s, l] = rgbToHsl(r, g, b);
+
+                screen.style.backgroundColor = hex;
+                curcolhex.textContent = hex.toUpperCase();
+                curcolhex.style.color = hex;
+                spanr.textContent = r;
+                spang.textContent = g;
+                spanb.textContent = b;
+
+                if (hslH) {
+                    hslH.value = h;
+                    hslS.value = s;
+                    hslL.value = l;
+                    spanh.textContent = h;
+                    spans.textContent = s;
+                    spanl.textContent = l;
+                }
+
+                updatePalette();
+            }
+
+            function updateFromHsl() {
+                const h = parseInt(hslH.value);
+                const s = parseInt(hslS.value);
+                const l = parseInt(hslL.value);
+                const [r, g, b] = hslToRgb(h, s, l);
+                const hex = rgbToHex(r, g, b);
+
+                screen.style.backgroundColor = hex;
+                curcolhex.textContent = hex.toUpperCase();
+                curcolhex.style.color = hex;
+
+                rgbR.value = r;
+                rgbG.value = g;
+                rgbB.value = b;
+                spanr.textContent = r;
+                spang.textContent = g;
+                spanb.textContent = b;
+
+                spanh.textContent = h;
+                spans.textContent = s;
+                spanl.textContent = l;
+
+                updatePalette();
+            }
+
+            function updateColor() {
+                updateFromRgb();
+            }
+
+            function randomColor() {
+                rgbR.value = Math.floor(Math.random() * 256);
+                rgbG.value = Math.floor(Math.random() * 256);
+                rgbB.value = Math.floor(Math.random() * 256);
+                updateColor();
+            }
+
+            function removeAllByClass(className) {
+                const elements = document.querySelectorAll(`.${className}`);
+                elements.forEach(element => element.remove());
+            }
+
+            rand.addEventListener("click", randomColor)
+
+            rgbR.addEventListener("input", updateFromRgb)
+            rgbG.addEventListener("input", updateFromRgb)
+            rgbB.addEventListener("input", updateFromRgb)
+
+            if (hslH) {
+                hslH.addEventListener("input", updateFromHsl)
+                hslS.addEventListener("input", updateFromHsl)
+                hslL.addEventListener("input", updateFromHsl)
+            }
+
+            curcolhex.addEventListener('click', async () => {
+                const text = curcolhex.innerText;
+                window.focus();
+                try {
+                    await navigator.clipboard.writeText(text);
+                    alert('Copied successfully')
+                } catch (err) {
+                    console.error('Clipboard failed:', err);
+                }
+            });
+
+            save.addEventListener("click", (e) => {
+                const btn = document.createElement('button')
+                btn.classList.add('btns')
+                const hex = rgbToHex(rgbR.value, rgbG.value, rgbB.value)
+                btn.style.backgroundColor = hex
+                btn.style.border = `3px solid ${hex}`
+                btn.style.padding = '15px'
+                btn.style.borderRadius = '10px'
+                btn.style.cursor = 'pointer'
+                btndiv.insertAdjacentElement("afterend", btn)
+
+                btn.addEventListener('click', () => {
+                    const savedHex = btn.style.backgroundColor;
+                    const rgbValues = savedHex.match(/\d+/g);
+                    if (rgbValues) {
+                        rgbR.value = rgbValues[0];
+                        rgbG.value = rgbValues[1];
+                        rgbB.value = rgbValues[2];
+                        updateColor();
+                    }
+                });
+            })
+
+            theme.addEventListener("click", () => {
+                if (document.body.classList.contains('dark-mode')) {
+                    document.body.classList.remove('dark-mode')
+                    theme.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M600-640 480-760l120-120 120 120-120 120Zm200 120-80-80 80-80 80 80-80 80ZM483-80q-84 0-157.5-32t-128-86.5Q143-253 111-326.5T79-484q0-146 93-257.5T409-880q-18 99 11 193.5T520-521q71 71 165.5 100T879-410q-26 144-138 237T483-80Zm0-80q88 0 163-44t118-121q-86-8-163-43.5T463-465q-61-61-97-138t-43-163q-77 43-120.5 118.5T159-484q0 135 94.5 229.5T483-160Zm-20-305Z"/></svg>'
+                    document.body.style.transition = 'all 0.3s'
+                }
+                else {
+                    document.body.classList.add('dark-mode')
+                    theme.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M565-395q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35Zm-226.5 56.5Q280-397 280-480t58.5-141.5Q397-680 480-680t141.5 58.5Q680-563 680-480t-58.5 141.5Q563-280 480-280t-141.5-58.5ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>'
+                    document.body.style.transition = 'all 0.3s'
+                }
+            })
+
+            clear.addEventListener('click', () => {
+                removeAllByClass('btns')
+            })
+
+            document.querySelectorAll('.pbtn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const bgColor = button.style.backgroundColor;
+                    if (bgColor && bgColor !== '') {
+                        const rgbValues = bgColor.match(/\d+/g);
+                        if (rgbValues) {
+                            rgbR.value = rgbValues[0];
+                            rgbG.value = rgbValues[1];
+                            rgbB.value = rgbValues[2];
+                            updateColor();
+                        }
+                    }
+                });
+            });
+
+            updateColor();
+
+        </script>
+</body>
+
+</html>

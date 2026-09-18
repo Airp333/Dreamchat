@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Homepage</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                color: whitesmoke;
+                background-color: #000000;
+
+                width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+                border-left: #a30000 solid 10px;
+                border-right: #a30000 solid 10px;
+                border-top: #a30000 solid 10px;
+                margin-top: 20px;
+                border-radius: 20px;
+                border-bottom: 5px solid #a30000;
+            }
+            #title {
+                margin: 10px;
+                text-align: center;
+                padding-bottom: 5px;
+            }
+            .board {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(240px, 1fr));
+                gap: 16px;
+                padding: 16px;
+                align-items: start;
+            }
+
+            .column {
+                background: #222222;
+                border-radius: 8px;
+                padding: 12px;
+                display: grid;
+                grid-template-rows: auto 1fr;
+                gap: 8px;
+            }
+
+            .card {
+                background: black;
+                border-radius: 6px;
+                padding: 12px;
+                margin-bottom: 5px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+                cursor: grab;
+            }
+
+            .card.dragging {
+                opacity: 0.4;
+            }
+
+            .column.drag-over {
+                outline: 2px dashed #a30000;
+                outline-offset: -4px;
+            }
+
+            .card-remove {
+                background: none;
+                border: none;
+                color: #333333;
+                font-size: 18px;
+                line-height: 1;
+                cursor: pointer;
+                padding: 2px 6px;
+                border-radius: 4px;
+            }
+
+            #CANT {
+                margin-bottom: 10px;
+            }
+            #input {
+                width: 215px;
+                background: none;
+                border: 4px solid #a40000;
+                height: 30px;
+                color: whitesmoke;
+                border-radius: 7px;
+                padding-left: 10px;
+            }
+            body {
+                font-family: "Ubuntu", sans-serif;
+            }
+        </style>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <h1 id="title">Kanban Board</h1>
+        <div class="board">
+            <div class="column" data-column="todo">
+                <h2>To Do</h2>
+                <div>
+                    <h3 id="CANT">Create a new task:</h3>
+                    <input type="text" id="input" />
+                </div>
+                <div class="cards">
+                    <div class="card" draggable="true">
+                        <span class="card-text">Task 1</span>
+                        <button class="card-remove" aria-label="Remove task">
+                            ×
+                        </button>
+                    </div>
+                    <div class="card" draggable="true">
+                        <span class="card-text">Task 2</span>
+                        <button class="card-remove" aria-label="Remove task">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="column" data-column="in-progress">
+                <h2>In Progress</h2>
+                <div class="cards">
+                    <div class="card" draggable="true">
+                        <span class="card-text">Task 3</span>
+                        <button class="card-remove" aria-label="Remove task">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="column" data-column="done">
+                <h2>Done</h2>
+                <div class="cards">
+                    <div class="card" draggable="true">
+                        <span class="card-text">Task 4</span>
+                        <button class="card-remove" aria-label="Remove task">
+                            ×
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            const input = document.getElementById("input");
+            const columns = document.querySelectorAll(".column");
+
+            function newTask(container, text) {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.draggable = true;
+
+                const span = document.createElement("span");
+                span.className = "card-text";
+                span.textContent = text;
+
+                const btn = document.createElement("button");
+                btn.className = "card-remove";
+                btn.setAttribute("aria-label", "Remove task");
+                btn.textContent = "×";
+
+                card.appendChild(span);
+                card.appendChild(btn);
+                container.appendChild(card);
+
+                attachCardEvents(card);
+            }
+
+            function attachCardEvents(card) {
+                card.querySelector(".card-remove").addEventListener(
+                    "click",
+                    () => {
+                        card.remove();
+                    },
+                );
+
+                card.addEventListener("dragstart", () => {
+                    card.classList.add("dragging");
+                });
+
+                card.addEventListener("dragend", () => {
+                    card.classList.remove("dragging");
+                });
+            }
+
+            function getDragAfterElement(container, y) {
+                const draggableCards = [
+                    ...container.querySelectorAll(".card:not(.dragging)"),
+                ];
+
+                return draggableCards.reduce(
+                    (closest, card) => {
+                        const box = card.getBoundingClientRect();
+                        const offset = y - box.top - box.height / 2;
+
+                        if (offset < 0 && offset > closest.offset) {
+                            return { offset, element: card };
+                        }
+                        return closest;
+                    },
+                    { offset: Number.NEGATIVE_INFINITY, element: null },
+                ).element;
+            }
+
+            function handleColumnDragOver(column, cardsContainer, e) {
+                e.preventDefault();
+                column.classList.add("drag-over");
+
+                const dragging = document.querySelector(".dragging");
+                const afterElement = getDragAfterElement(
+                    cardsContainer,
+                    e.clientY,
+                );
+
+                if (afterElement == null) {
+                    cardsContainer.appendChild(dragging);
+                } else {
+                    cardsContainer.insertBefore(dragging, afterElement);
+                }
+            }
+
+            function handleColumnDragLeave(column, e) {
+                if (!column.contains(e.relatedTarget)) {
+                    column.classList.remove("drag-over");
+                }
+            }
+
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" && input.value.trim() !== "") {
+                    const todoCards = document.querySelector(
+                        '[data-column="todo"] .cards',
+                    );
+                    newTask(todoCards, input.value.trim());
+                    input.value = "";
+                }
+            });
+
+            document.querySelectorAll(".card").forEach(attachCardEvents);
+
+            columns.forEach((column) => {
+                const cardsContainer = column.querySelector(".cards");
+
+                column.addEventListener("dragover", (e) =>
+                    handleColumnDragOver(column, cardsContainer, e),
+                );
+                column.addEventListener("dragleave", (e) =>
+                    handleColumnDragLeave(column, e),
+                );
+                column.addEventListener("drop", () =>
+                    column.classList.remove("drag-over"),
+                );
+            });
+        </script>
+    </body>
+</html>

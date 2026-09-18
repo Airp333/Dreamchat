@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=delete,attach_file,edit,send,logout,palette,reply" />
   <style>
     body {
-      background-image: linear-gradient(to top, #09203f 0%, #537895 100%);
+      background: linear-gradient(45deg, #121212, #E4002B);
       font-family: "Ubuntu", "Vazirmatn", sans-serif;
       color: #dbdee1;
       margin: 20px;
@@ -352,9 +352,15 @@
   </style>
 </head>
 <body>
+<script>
+  try {
+    const saved = localStorage.getItem('theme');
+    if (saved) document.body.style.background = saved;
+  } catch (e) {}
+</script>
   <div id="main" class="glass-container">
     <div id="title-container" class="glass-container">
-      <h2>Dreamchat v1.7</h2>
+      <h2>Dreamchat Hybrid</h2>
       <form class="logout-form" action="/logout" method="GET">
         <button class="logout-btn"><span class="material-symbols-outlined">logout</span></button>
       </form>
@@ -625,10 +631,12 @@
     }
 
     const grads = [
-      "linear-gradient(to top, #09203f 0%, #537895 100%)",
-      "linear-gradient(to right, #434343 0%, black 100%)",
-      "linear-gradient(78deg, rgba(102, 0, 0, 1) 0%, rgba(176, 0, 0, 1) 51%, rgba(212, 0, 0, 1) 100%)",
-      "linear-gradient(351deg, rgba(7, 46, 0, 1) 0%, rgba(28, 130, 0, 1) 52%, rgba(87, 168, 0, 1) 100%)",
+      "linear-gradient(159deg, #281604 0%, #A55C1B 100%)",
+      "linear-gradient(135deg, #000000, #1A1A1A)",
+      "linear-gradient(45deg, #121212, #E4002B)",
+      "linear-gradient(135deg, #1A2E05, #365314, #4D7C0F)",
+      "linear-gradient(135deg, #888888, #333333)",
+      "linear-gradient(135deg, #336791, #285480)",
       "linear-gradient(90deg, #2c003e 0%, #1a1a2e 100%)",
       "linear-gradient(135deg, #641e16 0%, #d35400 100%)",
     ];
@@ -644,7 +652,7 @@
 
       const div = document.createElement('div');
       div.style.height = "55px";
-      div.style.width = "260px";
+      div.style.width = "340px";
       div.style.position = "fixed";
       div.style.bottom = "15px";
       div.style.left = "70px";
@@ -666,7 +674,8 @@
         btn.setAttribute('aria-label', `Theme ${i + 1}`);
 
         btn.addEventListener('click', () => {
-          body.style.background = grad;
+        body.style.background = grad;
+        try { localStorage.setItem('theme', grad); } catch (e) { console.log(e); }
         });
 
         div.append(btn);

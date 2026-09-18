@@ -4,7 +4,9 @@ const express = require('express');
 const router = express.Router();
 const Message = require('../models/message');
 const requireUser = require('../middleware/requireUser');
+const requireAdmin = require('../middleware/requireAdmin');
 const usernameToColor = require('../utils/usernameToColor');
+const si = require('systeminformation');
 
 router.get("/chat", requireUser, (req, res) => {
   Message.find()
@@ -42,6 +44,41 @@ router.get("/logout", (req, res) => {
   req.session.destroy(() => {
     res.redirect("/");
   });
+});
+
+router.get("/color", (req, res) => {
+  res.render("colorPicker.ejs");
+});
+
+router.get("/calc", (req, res) => {
+  res.render("calculator.ejs");
+});
+
+router.get("/kanban", (req, res) => {
+  res.render("kanbanBoard.ejs");
+});
+
+router.get("/numguess", (req, res) => {
+  res.render("numberGuesser.ejs");
+});
+
+router.get("/dashboard", requireAdmin, (req, res) => {
+  res.render("dashboard.ejs");
+});
+
+router.get("/admin", (req, res) => {
+  res.render("adminLogin.ejs");
+});
+
+router.post("/verify", (req, res) => {
+  const password = req.body.password;
+
+  if (password === process.env.ADMIN_PASSWORD) {
+    req.session.isAdmin = true;
+    res.redirect("/dashboard");
+  } else {
+    res.redirect("/admin");
+  }
 });
 
 module.exports = router;

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Ubuntu", sans-serif;
+            color: black;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.15) 100%), radial-gradient(at top center, rgba(255,255,255,0.40) 0%, rgba(0,0,0,0.40) 120%) #989898;
+            background-blend-mode: multiply,multiply;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 25px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: black;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-unit {
+            font-size: 1.2rem;
+            font-weight: 400;
+            opacity: 0.7;
+        }
+
+        .list-container {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 1.1rem;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .stat-label {
+            opacity: 0.8;
+        }
+
+        .stat-value-small {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        #cpuChart, #ramChart {
+            width: 100%;
+            margin-top: 10px;
+        }
+        #uploadValue{
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body>
+
+  <div class="dashboard">
+      <div id="cpu-container" class="glass-container">
+          <h2>CPU Usage</h2>
+          <h3 id="cpuModel"></h3>
+          <div class="stat-value"><span id="cpuValue">0</span><span class="stat-unit">%</span></div>
+          <div id="cpuChart"></div>
+          <h2>Cpu Temperature</h2>
+          <h1 id="cpuTempInfo"></h1>
+          <div id="tempChart"></div>
+      </div>
+
+      <div id="ram-container" class="glass-container">
+          <h2>Memory Used</h2>
+          <h2>Total Memory: <span id="ramInfo"></span></h2>
+          <div class="stat-value"><span id="ramUsedValue">0</span><span class="stat-unit"> GB</span></div>
+          <div id="ramChart"></div>
+
+          <h2>GPU Usage</h2>
+          <h3 id="gpuModel"></h3>
+          <div class="stat-value"><span id="gpuValue">0</span><span class="stat-unit">%</span></div>
+          <div id="gpuChart"></div>
+      </div>
+
+      <div id="net-container" class="glass-container">
+          <h2>Network</h2>
+          <div class="stat-value"><span id="downloadValue">0</span><span class="stat-unit">Kbps</span><span id="uploadValue">0</span><span class="stat-unit">Kbps</span></div>
+          <div id="netChart"></div>
+
+          <h2>Disk Usage</h2>
+          <div class="stat-value"><span id="diskValue">0</span><span class="stat-unit">%</span></div>
+          <div id="diskChart"></div>
+          <h3 id="diskInfo"></h3>
+      </div>
+  </div>
+
+  <script>
+  let cpuHistory = [];
+  let ramHistory = [];
+  let downloadHistory = [];
+  let uploadHistory = [];
+  let ramMaxSet = false;
+  let gpuHistory = [];
+  let tempHistory = [];
+
+  const sharedChartConfig = {
+      type: "area",
+      height: 150,
+      width: "100%",
+      animations: {
+          enabled: true,
+          easing: "linear",
+          dynamicAnimation: { speed: 1000 }
+      },
+      toolbar: { show: false },
+      zoom: { enabled: false },
+      background: 'transparent'
+  };
+
+  const chartOptionsCPU = {
+    chart: sharedChartConfig,
+    series: [{ name: "CPU %", data: cpuHistory }],
+    stroke: { curve: "smooth", width: 2, colors: ['#424CFF'] },
+    fill: {
+        type: "gradient",
+        gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.1, stops: [0, 90, 100] }
+    },
+    xaxis: { labels: { show: false }, axisBorder: { show: false }, axisTicks: { show: false } },
+    dataLabels: { enabled: false },
+    grid: { show: false },
+    tooltip: { theme: 'dark' },
+    colors: ["#424CFF"],
+    yaxis: {
+      min: 0,
+      max: 100,
+      labels: { style: { colors: "#111111", opacity: 0.5 } }
+    }
+  };
+
+  const chartOptionsRAM = {
+    chart: sharedChartConfig,
+    series: [{ name: "RAM gb", data: ramHistory }],
+    stroke: { curve: "smooth", width: 2, colors: ['#00B300'] },
+    fill: {
+        type: "gradient",
+        gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.1, stops: [0, 90, 100] }
+    },
+    xaxis: { labels: { show: false }, axisBorder: { show: false }, axisTicks: { show: false } },
+    dataLabels: { enabled: false },
+    grid: { show: false },
+    tooltip: { theme: 'dark' },
+    colors: ["#00B300"],
+    yaxis: {
+      min: 0,
+      max: 100,
+      labels: { style: { colors: "#111111", opacity: 0.5 } }
+    }
+  };
+
+  const chartOptionsNET = {
+    chart: sharedChartConfig,
+    series: [
+      { name: "Download", data: downloadHistory },
+      { name: "Upload", data: uploadHistory }
+    ],
+    stroke: { curve: "smooth", width: 2, colors: ['#FFA229'] },
+    fill: {
+        type: "gradient",
+        gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.1, stops: [0, 90, 100] }
+    },
+    xaxis: { labels: { show: false }, axisBorder: { show: false }, axisTicks: { show: false } },
+    dataLabels: { enabled: false },
+    grid: { show: false },
+    tooltip: { theme: 'dark' },
+    colors: ["#FF2929", "#F59E0B"],
+    yaxis: {
+      min: 0,
+      labels: { style: { colors: "#111111", opacity: 0.5 } }
+    }
+  };
+
+  const chartOptionsGPU = {
+    chart: sharedChartConfig,
+    series: [{ name: "GPU %", data: gpuHistory }],
+    stroke: { curve: "smooth", width: 2, colors: ['#8A008A'] },
+    fill: {
+        type: "gradient",
+        gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.1, stops: [0, 90, 100] }
+    },
+    xaxis: { labels: { show: false }, axisBorder: { show: false }, axisTicks: { show: false } },
+    dataLabels: { enabled: false },
+    grid: { show: false },
+    tooltip: { theme: 'dark' },
+    colors: ["#8A008A"],
+    yaxis: {
+      min: 0,
+      max: 100,
+      labels: { style: { colors: "#111111", opacity: 0.5 } }
+    }
+  };
+
+  const chartOptionsDISK = {
+    chart: {
+      type: "donut",
+      height: 150,
+      width: "100%",
+      background: 'transparent'
+    },
+    series: [0, 0],
+    labels: ["Used", "Free"],
+    dataLabels: { enabled: false },
+    tooltip: { theme: 'dark' },
+    colors: ["#F02400", "#808080"],
+  };
+
+  const chartOptionsTEMP = {
+    chart: sharedChartConfig,
+    series: [{ name: "CPU Temp", data: tempHistory }],
+    stroke: { curve: "smooth", width: 2, colors: ['#FF5733'] },
+    fill: {
+        type: "gradient",
+        gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.1, stops: [0, 90, 100] }
+    },
+    xaxis: { labels: { show: false }, axisBorder: { show: false }, axisTicks: { show: false } },
+    dataLabels: { enabled: false },
+    grid: { show: false },
+    tooltip: { theme: 'dark' },
+    colors: ["#FF5733"],
+    yaxis: {
+      min: 30,
+      max: 90,
+      labels: { style: { colors: "#111111", opacity: 0.5 } }
+    }
+  };
+
+  const cpuChart = new ApexCharts(document.querySelector("#cpuChart"), chartOptionsCPU);
+  cpuChart.render();
+  const ramChart = new ApexCharts(document.querySelector("#ramChart"), chartOptionsRAM);
+  ramChart.render();
+  const netChart = new ApexCharts(document.querySelector("#netChart"), chartOptionsNET);
+  netChart.render();
+  const gpuChart = new ApexCharts(document.querySelector("#gpuChart"), chartOptionsGPU);
+  gpuChart.render();
+  const diskChart = new ApexCharts(document.querySelector("#diskChart"), chartOptionsDISK);
+  diskChart.render();
+  const tempChart = new ApexCharts(document.querySelector("#tempChart"), chartOptionsTEMP);
+  tempChart.render();
+
+  function update() {
+    fetch("/stats")
+      .then((res) => res.json())
+      .then((data) => {
+        const usedPercent = data.diskUse;
+        const freePercent = 100 - data.diskUse;
+        diskChart.updateSeries([usedPercent, freePercent]);
+
+        if (!ramMaxSet) {
+          ramChart.updateOptions({ yaxis: { min: 0, max: data.ramTotal } });
+          ramMaxSet = true;
+        }
+        document.getElementById("cpuValue").textContent = data.cpu;
+        cpuHistory.push(data.cpu);
+        if (cpuHistory.length > 60) {
+          cpuHistory.shift();
+        }
+        cpuChart.updateSeries([{ data: cpuHistory }]);
+
+        document.getElementById("ramUsedValue").textContent = data.ramUsed;
+        ramHistory.push(data.ramUsed);
+        if (ramHistory.length > 60) {
+          ramHistory.shift();
+        }
+        ramChart.updateSeries([{ data: ramHistory }]);
+
+        document.getElementById("downloadValue").textContent = data.download;
+        document.getElementById("uploadValue").textContent = data.upload;
+
+        downloadHistory.push(data.download);
+        if (downloadHistory.length > 60) {
+          downloadHistory.shift();
+        }
+        uploadHistory.push(data.upload);
+        if (uploadHistory.length > 60) {
+          uploadHistory.shift();
+        }
+        netChart.updateSeries([
+          { name: "Download", data: downloadHistory },
+          { name: "Upload", data: uploadHistory }
+        ]);
+
+        document.getElementById("diskValue").textContent = data.diskUse;
+        document.getElementById("gpuValue").textContent = data.gpuLoad !== null ? data.gpuLoad : "N/A";
+
+        gpuHistory.push(data.gpuLoad);
+        if (gpuHistory.length > 60) {
+          gpuHistory.shift();
+        }
+        gpuChart.updateSeries([{ data: gpuHistory }]);
+
+        document.getElementById("cpuModel").textContent = data.cpuModel;
+        document.getElementById("gpuModel").textContent = data.gpuModel;
+        document.getElementById("cpuTempInfo").textContent =
+          `${data.cpuTemp}°C |${data.cpuTempMax}°C |${data.cpuTempAvgCores}°C`;
+
+        tempHistory.push(data.cpuTemp);
+        if (tempHistory.length > 60) {
+          tempHistory.shift();
+        }
+        tempChart.updateSeries([{ data: tempHistory }]);
+        document.getElementById("ramInfo").textContent = `${data.ramTrueSize}GB ${data.ramType}`;
+        document.getElementById("diskInfo").textContent = `${data.diskFreeGB}GB free of ${data.diskTotalGB}GB`;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+
+  update();
+  setInterval(update, 1000);
+  </script>
+</body>
+</html>

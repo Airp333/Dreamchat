@@ -12,6 +12,7 @@ const authRouter = require('./routes/auth.js');
 const pagesRouter = require('./routes/pages');
 const messagesRouter = require('./routes/messages');
 const registerSocketHandlers = require('./sockets');
+const statsRouter = require('./routes/stats');
 
 const app = express();
 const server = http.createServer(app);
@@ -33,6 +34,7 @@ registerSocketHandlers(io);
 app.use('/api/auth', authRouter);
 app.use(messagesRouter(io));
 app.use(pagesRouter);
+app.use(statsRouter);
 
 server.listen(3000, () => {
   console.log('server started successfully');

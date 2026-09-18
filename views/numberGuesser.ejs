@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.9">
+    <title>Number guesser</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet">
+    <style>
+    body.dark-mode{
+        background-color: black;
+        color: #7400aa;
+    }
+    body{
+        background-color: whitesmoke;
+        color: #7400aa;
+        font-family: "Ubuntu", sans-serif;
+        width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 150px;
+        text-align: center;
+    }
+    input, button{
+        font-family: inherit;
+    }
+    .material-symbols-outlined{
+        font-size: 20px;
+        line-height: 1;
+        user-select: none;
+    }
+    input{
+        border: #7400aa 2px solid;
+        align-content: center;
+        border-radius: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        background: none;
+        color: #7400aa;
+    }
+    #title{
+        text-align: center;
+    }
+    #theme{
+        position: absolute;
+        bottom: 30px;
+        right: 30px;
+        background-color: #7400aa;
+        border-radius: 100%;
+        border: solid #7400aa 2px;
+        padding: 12px;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .diff-btn{
+        background-color: #7400aa;
+        border-radius: 15px;
+        border: solid #7400aa 2px;
+        color: white;
+        padding: 4px 10px 4px 6px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    #divbtn{
+        padding: 15px;
+    }
+    #realtitle{
+        padding-bottom: 20px;
+    }
+</style>
+</head>
+<body>
+    <h2 id="realtitle">Number guessing game</h2>
+    <h3 id="title">Select a difficulty:</h3>
+    <input type="text" name="input" id="screen">
+    <div id="divbtn">
+        <button class="diff-btn" id="easy"><span class="material-symbols-outlined">sentiment_satisfied</span>Easy</button>
+        <button class="diff-btn" id="medium"><span class="material-symbols-outlined">sentiment_neutral</span>Medium</button>
+        <button class="diff-btn" id="hard"><span class="material-symbols-outlined">local_fire_department</span>Hard</button>
+        <button class="diff-btn" id="impossible"><span class="material-symbols-outlined">dangerous</span>Impossible</button>
+    </div>
+    <button id="theme" aria-label="Toggle theme"><span class="material-symbols-outlined" id="themeIcon">dark_mode</span></button>
+<script>
+    const input = document.querySelector("input")
+    const title = document.getElementById("title")
+    const theme = document.querySelector("#theme");
+    const themeIcon = document.querySelector("#themeIcon")
+    const body = document.querySelector("body")
+
+    const eas = document.querySelector("#easy")
+    const med = document.querySelector("#medium")
+    const har = document.querySelector("#hard")
+    const imp = document.querySelector("#impossible")
+
+
+    theme.addEventListener("click", () => {
+        if (document.body.classList.contains('dark-mode')) {
+            document.body.classList.remove('dark-mode')
+            themeIcon.textContent = "dark_mode"
+        }
+        else {
+            document.body.classList.add('dark-mode')
+            themeIcon.textContent = "light_mode"
+        }
+    })
+
+
+    function GenKey(num){
+        if (num == 100){
+            return Math.floor(Math.random() * 100) + 1;
+        }
+        if (num == 500){
+            return Math.floor(Math.random() * 500) + 1;
+        }
+        if (num == 1000){
+            return Math.floor(Math.random() * 1000) + 1;
+        }
+        if (num == 10000){
+            return Math.floor(Math.random() * 10000) + 1;
+        }
+    }
+
+    const d1 = GenKey(100)
+    const d2 = GenKey(500)
+    const d3 = GenKey(1000)
+    const d4 = GenKey(10000)
+
+
+    eas.addEventListener("click", (event) => {
+        title.textContent = "Guess the number!(1-100)"
+        let guess = parseInt(input.value)
+        input.addEventListener("keypress", (event) => {
+            let guess = parseInt(input.value)
+            if (event.key === "Enter") {
+            if (isNaN(guess) || guess <= 0) {
+                title.textContent = "Enter a valid positive number"
+            }
+            if (guess != d1) {
+                if (guess > d1) {
+                    title.textContent = "Too high! try again."
+                }
+                if (guess < d1) {
+                    title.textContent = "Too low! try again."
+                }
+            }
+            if (guess === d1) {
+                title.textContent = `YOU WON! play another difficulty`
+            }
+            }
+        })
+    })
+
+
+    med.addEventListener("click", (event) => {
+        title.textContent = "Guess the number!(1-500)"
+        let guess = parseInt(input.value)
+        input.addEventListener("keypress", (event) => {
+            let guess = parseInt(input.value)
+            if (event.key === "Enter") {
+            if (isNaN(guess) || guess <= 0) {
+                title.textContent = "Enter a valid positive number"
+            }
+            if (guess != d2) {
+                if (guess > d2) {
+                    title.textContent = "Too high! try again."
+                }
+                if (guess < d2) {
+                    title.textContent = "Too low! try again."
+                }
+            }
+            if (guess === d2) {
+                title.textContent = `YOU WON! play another difficulty`
+            }
+            }
+        })
+    })
+
+
+    har.addEventListener("click", (event) => {
+        title.textContent = "Guess the number!(1-1000)"
+        let guess = parseInt(input.value)
+        input.addEventListener("keypress", (event) => {
+            let guess = parseInt(input.value)
+            if (event.key === "Enter") {
+            if (isNaN(guess) || guess <= 0) {
+                title.textContent = "Enter a valid positive number"
+            }
+            if (guess != d3) {
+                if (guess > d3) {
+                    title.textContent = "Too high! try again."
+                }
+                if (guess < d3) {
+                    title.textContent = "Too low! try again."
+                }
+            }
+            if (guess === d3) {
+                title.textContent = `YOU WON! play another difficulty`
+            }
+            }
+        })
+    })
+
+
+    imp.addEventListener("click", (event) => {
+        title.textContent = "Guess the number!(1-10000)"
+        let guess = parseInt(input.value)
+        input.addEventListener("keypress", (event) => {
+            let guess = parseInt(input.value)
+            if (event.key === "Enter") {
+            if (isNaN(guess) || guess <= 0) {
+                title.textContent = "Enter a valid positive number"
+            }
+            if (guess != d4) {
+                if (guess > d1) {
+                    title.textContent = "Too high! try again."
+                }
+                if (guess < d4) {
+                    title.textContent = "Too low! try again."
+                }
+            }
+            if (guess === d4) {
+                title.textContent = `YOU WON! play another difficulty`
+            }
+            }
+        })
+    })
+</script>
+</body>
+</html>

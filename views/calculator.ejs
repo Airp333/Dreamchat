@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            background-color: black;
+            font-family: sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        form {
+            width: 260px;
+            padding: 10px;
+            border: 2px solid green;
+        }
+        #screen {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: black;
+            border: 1.5px solid green;
+            color: green;
+            font-size: 1.2rem;
+            text-align: right;
+        }
+        .row {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        button {
+            flex: 1;
+            padding: 10px 0;
+            background-color: black;
+            border: 1.5px solid green;
+            color: green;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #062006;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <input type="text" id="screen" name="screen" readonly>
+        <div class="row">
+            <button type="button" class="num-btns" data-value="1">1</button>
+            <button type="button" class="num-btns" data-value="2">2</button>
+            <button type="button" class="num-btns" data-value="3">3</button>
+            <button type="button" class="num-btns" data-value="4">4</button>
+            <button type="button" class="num-btns" data-value="5">5</button>
+        </div>
+        <div class="row">
+            <button type="button" class="num-btns" data-value="6">6</button>
+            <button type="button" class="num-btns" data-value="7">7</button>
+            <button type="button" class="num-btns" data-value="8">8</button>
+            <button type="button" class="num-btns" data-value="9">9</button>
+            <button type="button" class="num-btns" data-value="0">0</button>
+        </div>
+        <div class="row">
+            <button type="button" id="plus" data-value="+">+</button>
+            <button type="button" id="negative" data-value="-">-</button>
+            <button type="button" id="zarb" data-value="x">x</button>
+            <button type="button" id="taghsim" data-value="÷">÷</button>
+            <button type="button" id="equals" data-value="=">=</button>
+        </div>
+        <div class="row">
+            <button type="button" id="clear-btn" data-value="c">c</button>
+        </div>
+    </form>
+
+<script>
+  const screen = document.querySelector("#screen");
+  const buttons = document.querySelectorAll("button");
+  const clear = document.querySelector("#clear-btn");
+  const equals = document.querySelector("#equals");
+  const operators = ["+", "-", "x", "÷"];
+
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      const value = button.getAttribute("data-value");
+
+      if (value === "c" || value === "=") return;
+
+      const lastChar = screen.value.slice(-1);
+
+      if (operators.includes(value)) {
+        if (screen.value === "") return;
+
+        if (operators.includes(lastChar)) {
+          screen.value = screen.value.slice(0, -1) + value;
+        } else {
+          screen.value += value;
+        }
+      } else {
+        screen.value += value;
+      }
+    });
+  });
+
+  clear.addEventListener("click", () => {
+    screen.value = "";
+  });
+
+  equals.addEventListener("click", () => {
+    try {
+      let expression = screen.value.replaceAll("x", "*").replaceAll("÷", "/");
+      screen.value = eval(expression);
+    } catch {
+      screen.value = "Error";
+    }
+  });
+</script>
+</body>
+</html>

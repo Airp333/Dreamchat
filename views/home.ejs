@@ -8,11 +8,11 @@
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=delete,attach_file,edit,send,logout,palette,reply,login" />
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=chat,exposure_plus_1,palette,view_kanban,calculate" />
     <title>Welcome to Dreamchat</title>
     <style>
     body {
-      background-image: linear-gradient(to top, #09203f 0%, #537895 100%);
+      background: linear-gradient(45deg, #121212, #E4002B);
       font-family: "Ubuntu", "Vazirmatn", sans-serif;
       color: white;
       justify-content: center;
@@ -98,20 +98,60 @@ a:focus {
   cursor: pointer;
 }
 
+.tooltip-btn {
+  position: relative;
+}
+
+.tooltip-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  text-shadow: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+}
+
+.tooltip-btn:hover::after,
+.tooltip-btn:focus-visible::after {
+  opacity: 1;
+}
+
+#btn-div{
+margin-bottom: 20px;
+}
+
     </style>
 </head>
 <body>
 <header class="glass-container">
-<h2 id="header-title">Dreamchat</h2>
+<h2 id="header-title">Dreamchat Hybrid</h2>
 <form action="/auth">
-<button class="glass-container"><a target="__blank"href="https://github.com/Airp333/Dreamchat">Github</a></button>
+<button class="glass-container" type="button"><a target="__blank"href="https://github.com/Airp333/Dreamchat">Github</a></button>
 <button class="glass-container" type="submit" id="login-btn">Login</button>
 </form>
 </header>
 <article class="glass-container">
 <img class="glass-container" id="logo" src="https://res.cloudinary.com/pflmvmcr/image/upload/v1789628776/dreamchat-uploads/laohm11xsrnt27zy8l7h.png" width="150px" height="150px" />
-<h1>Dreamchat</h1>
-<p>  Welcome to Dreamchat, a minimal chatting web app with one public room. Completely open source and produced by hassanware and developed by Airp. Create a account or login to join the fun</p>
+<h1>Dreamchat v1.9</h1>
+<p>  Welcome to Dreamchat, a minimal chatting web app with one public room. Completely open source and produced by hassanware and developed by Airp. Create a account or login to join the fun </p>
+<div id="btn-div">
+<button onclick="location.href='/chat'" class="glass-container tooltip-btn" data-tooltip="public chatroom" aria-label="Public chat room"><span class="material-symbols-outlined">chat</span></button>
+<button onclick="location.href='/numguess'" class="glass-container tooltip-btn" data-tooltip="number guesser" aria-label="TODO: +1 description"><span class="material-symbols-outlined">exposure_plus_1</span></button>
+<button onclick="location.href='/color'" class="glass-container tooltip-btn" data-tooltip="Color picker" aria-label="Color picker"><span class="material-symbols-outlined">palette</span></button>
+<button onclick="location.href='/kanban'" class="glass-container tooltip-btn" data-tooltip="kanban board" aria-label="TODO: kanban description"><span class="material-symbols-outlined">view_kanban</span></button>
+<button onclick="location.href='/calc'" class="glass-container tooltip-btn" data-tooltip="calculator" aria-label="TODO: calculator description"><span class="material-symbols-outlined">calculate</span></button>
+</div>
 </article>
 </body>
 </html>
